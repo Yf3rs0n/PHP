@@ -1,14 +1,18 @@
 <?php
 
+use App\Config\Errorlog;
 use App\Config\ResponseHttp;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require 'vendor/autoload.php';
+
+Errorlog::activateErrorLog();//Todos los errores de php los va a guardar en el archivo php-error.log
 
 if (isset($_GET['route'])) {
+
     $url = explode('/', $_GET['route']);
-    $lista = ['auth','user']; //Contiene las rutas que van a ser permitidas
+    $lista = ['auth','food']; //Contiene las rutas que van a ser permitidas
     //Buscar las carpetas donde estan nuestras rutas
-    $file = dirname(__DIR__) . '/src/Routes/' . $url[0] . '.php';
+    $file = 'src/Routes/' .$url[0]. '.php';
 
     //validamos que esa ruta tenga permisos
     if (!in_array($url[0], $lista)) {

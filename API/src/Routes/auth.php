@@ -1,2 +1,4 @@
 <?php
-echo 'Hola desde este auth';
+use App\DB\ConnectionDB;
+
+ConnectionDB::getConnection();

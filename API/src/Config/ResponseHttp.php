@@ -3,11 +3,13 @@
 namespace App\Config;
 
 class ResponseHttp{
-
     public static $message = array(
         'status' => '',
         'message' => ''
     );
+
+    
+/*********************Metodo de respuestas**********************/
     final public static function status200(String $res){
         http_response_code(200);
         self::$message['status'] = 'OK';
