@@ -7,15 +7,16 @@ use App\Models\FoodModel;
 
 class FoodController extends BaseController
 {
-    /**********************Consultar todos las comidas*********************/
+    /**********************Consultar las comidas activas*********************/
     final public function getAll(string $endPoint)
     {
         if ($this->getMethod() == 'get' && $endPoint == $this->getRoute()) {
             // Crea una instancia de FoodModel
             $foodModel = new FoodModel([]);
 
-            // Llama al método getAll() de la instancia creada
-            echo json_encode($foodModel->getAll());
+            // Llama al método getAllActive() de la instancia creada para obtener las comidas activas
+            $activeFoods = $foodModel->getAllActive();
+            echo json_encode($activeFoods);
             exit;
         }
     }
@@ -30,29 +31,30 @@ class FoodController extends BaseController
             // Crea una instancia de FoodModel con los datos recibidos
             $foodModel = new FoodModel($data);
 
-            // Llama al método postSave() de la instancia creada
+            // Llama al método postSave() de la instancia creada para registrar la comida
             echo json_encode($foodModel->postSave());
             exit;
         }
     }
-/**************************Consultar comidas por ID de categoría***************************/
-    final public function getByCategory(string $endPoint)
+
+    /************************************Eliminar comida**********************************/
+    final public function deleteFood(int $foodId)
     {
-        if ($this->getMethod() == 'get' && $endPoint == $this->getRoute()) {
-            // Obtiene el ID de la categoría enviado como parámetro en la URL
-            $categoryId = (int) $this->getAttribute()[2];
-
-            // Llama al método getByCategoryId de FoodModel con el ID de categoría
-            $foodsByCategory = FoodModel::getByCategoryId($categoryId);
-
-            // Verifica si hay resultados y envía la respuesta
-            if (!empty($foodsByCategory['data'])) {
-                echo json_encode($foodsByCategory);
-            } else {
-                echo json_encode(ResponseHttp::status404());
-            }
-            exit;
+        // Obtener la comida por su ID
+        $food = FoodModel::getById($foodId);
+    
+        // Verificar si la comida existe
+        if ($food) {
+            // Cambiar el estado a "inactivo" en lugar de eliminarla
+            $food->setStatus(0);
+            $food->postSave(); // Guardar el cambio en la base de datos
+    
+            echo json_encode(['status' => 'success', 'message' => 'Comida desactivada correctamente']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Comida no encontrada']);
         }
+        exit;
     }
-
+    
 }
+
