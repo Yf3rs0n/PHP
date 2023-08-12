@@ -3,35 +3,36 @@
 use App\Config\ResponseHttp;
 use App\Controllers\FoodController;
 
-/*************Parametros enviados por la URL*******************/
+/**
+ * Obtiene la ruta de la solicitud
+ */
 $params = explode('/', $_GET['route']);
 
-/*************Instancia del controlador de comida**************/
+/**
+ * Crea una instancia de FoodController
+ */
 $app = new FoodController();
-
-/*************Rutas***************/
+/**
+* Rutas
+*/
 if ($params[0] === 'food') {
+
+    // Consultar una comida
+    if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($params[1]) && is_numeric($params[1])) {
+        $app->getFoodById($params[1]);
+    }
     // Consultar todas las comidas activas
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $app->getAll('food/');
     }
-
-    // Registrar una nueva comida
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $app->postSave('food/');
+    // Crear una nueva comida
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && $params[1] === 'create') {
+        $app->createFood();
     }
-
-    // Eliminar una comida por su ID
-    if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-        // Verificar que se haya proporcionado un ID válido
-        if (isset($params[1]) && is_numeric($params[1])) {
-            $foodId = (int)$params[1];
-            $app->deleteFood($foodId);
-        } else {
-            echo json_encode(ResponseHttp::status400('ID de comida inválido'));
-        }
+    // Actualizar un alimento
+    if ($_SERVER['REQUEST_METHOD'] === 'PUT' && isset($params[1]) && is_numeric($params[1])) {
+        $app->updateFood($params[1]);
     }
 }
 
-/****************Error 404*****************/
 echo json_encode(ResponseHttp::status404());

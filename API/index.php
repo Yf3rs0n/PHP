@@ -4,13 +4,18 @@ use App\Config\Errorlog;
 use App\Config\ResponseHttp;
 
 require 'vendor/autoload.php';
+/**
+ *Todos los errores de php los va a guardar en el archivo php-error.log
+ */
+Errorlog::activateErrorLog();
 
-Errorlog::activateErrorLog();//Todos los errores de php los va a guardar en el archivo php-error.log
-
+/**
+ * Obtiene la ruta de la solicitud 
+ */
 if (isset($_GET['route'])) {
 
     $url = explode('/', $_GET['route']);
-    $lista = ['auth','food']; //Contiene las rutas que van a ser permitidas
+    $lista = ['food']; //Contiene las rutas que van a ser permitidas
     //Buscar las carpetas donde estan nuestras rutas
     $file = 'src/Routes/' .$url[0]. '.php';
 

@@ -1,54 +1,57 @@
 <?php
-//Esta clase contienen los codigos de estado http
 namespace App\Config;
 
-class ResponseHttp{
-    public static $message = array(
-        'status' => '',
-        'message' => ''
-    );
-
-    
-/*********************Metodo de respuestas**********************/
-    final public static function status200(String $res){
-        http_response_code(200);
-        self::$message['status'] = 'OK';
-        self::$message['message'] = $res;
-        return self::$message;
+class ResponseHttp {
+    /**
+     * Devuelve una respuesta con el código de estado 200 (OK).
+     */
+    final public static function status200(string $message): array {
+        return self::getResponseArray(200, 'OK', $message);
     }
 
-    final public static function status201(String $res = 'Creada'){
-        http_response_code(201);
-        self::$message['status'] = 'OK';
-        self::$message['message'] = $res;
-        return self::$message;
+    /**
+     * Devuelve una respuesta con el código de estado 201 (Creada).
+     */
+    final public static function status201(string $message = 'Creada'): array {
+        return self::getResponseArray(201, 'OK', $message);
     }
 
-    final public static function status400(String $res = 'Solicitud incorrecta'){
-        http_response_code(400);
-        self::$message['status'] = 'error';
-        self::$message['message'] = $res;
-        return self::$message;
+    /**
+     * Devuelve una respuesta con el código de estado 400 (Solicitud incorrecta).
+     */
+    final public static function status400(string $message = 'Solicitud incorrecta'): array {
+        return self::getResponseArray(400, 'error', $message);
     }
 
-    final public static function status401(String $res = 'No autorizado'){
-        http_response_code(401);
-        self::$message['status'] = 'error';
-        self::$message['message'] = $res;
-        return self::$message;
+    /**
+     * Devuelve una respuesta con el código de estado 401 (No autorizado).
+     */
+    final public static function status401(string $message = 'No autorizado'): array {
+        return self::getResponseArray(401, 'error', $message);
     }
 
-    final public static function status404(String $res = 'No encontrada'){
-        http_response_code(404);
-        self::$message['status'] = 'error';
-        self::$message['message'] = $res;
-        return self::$message;
+    /**
+     * Devuelve una respuesta con el código de estado 404 (No encontrada).
+     */
+    final public static function status404(string $message = 'No encontrada'): array {
+        return self::getResponseArray(404, 'error', $message);
     }
 
-    final public static function status500(String $res = 'Error Interno del Servidor'){
-        http_response_code(500);
-        self::$message['status'] = 'error';
-        self::$message['message'] = $res;
-        return self::$message;
+    /**
+     * Devuelve una respuesta con el código de estado 500 (Error Interno del Servidor).
+     */
+    final public static function status500(string $message = 'Error Interno del Servidor'): array {
+        return self::getResponseArray(500, 'error', $message);
+    }
+
+    /**
+     * Devuelve un array de respuesta con los valores dados.
+     */
+    private static function getResponseArray(int $statusCode, string $statusMessage, string $message): array {
+        http_response_code($statusCode);
+        return [
+            'status' => $statusMessage,
+            'message' => $message,
+        ];
     }
 }
