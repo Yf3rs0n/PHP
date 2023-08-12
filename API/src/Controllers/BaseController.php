@@ -1,49 +1,49 @@
 <?php
+
 namespace App\Controllers;
 
 class BaseController {
 
-    protected static $validate_number = '/^[0-9]+$/';
-    protected static $validate_text = '/^[a-zA-Z ]+$/';
-    protected static $validate_rol = '/^[1,2,3]{1,1}$/';
-    protected static $validate_stock = '/^[0-9]{1,}$/';
-    protected static $validate_description = '/^[a-zA-Z ]{1,30}$/';
+    // Definición de reglas de validación
+    protected static $validationRules = [
+        'number' => '/^[0-9]+$/',
+        'text' => '/^[a-zA-Z ]+$/',
+        'rol' => '/^[1-3]$/',
+        'stock' => '/^[0-9]+$/',
+        'description' => '/^[a-zA-Z ]{1,30}$/' // Máximo 30 caracteres de letras y espacios
+    ];
     
-    /*************Obtener el metodo HTTP************/
-    protected function getMethod()
-    {
-       return strtolower($_SERVER['REQUEST_METHOD']);
+    // Método para determinar si el método de la petición HTTP es GET
+    protected function isGetMethod(){
+        return strtolower($_SERVER['REQUEST_METHOD']);
     }
 
-    /******Obtener ruta de la petición HTTP********/
-    protected function getRoute()
-    {
-       return $_GET['route'];
+    // Método para obtener la ruta de la petición HTTP
+    protected function getRoute(){
+        return $_GET['route'];
     }
 
-    /******Obtener datos enviados por la URL*******/
-    protected function getAttribute()
-    {
+    // Método para obtener los segmentos de la ruta de la petición HTTP
+    protected function getAttribute(){
         $route = $this->getRoute();
-        $params = explode('/',$route);
-        return $params;
+        return explode('/', $route);
     }
 
-    /*************Obtener los Header************/
-    protected function getHeader(string $header)
-    {
-        $ContentType = getallheaders();
-        return $ContentType[$header];
+    // Método para obtener el valor de un encabezado HTTP específico
+    protected function getHeader(string $header){
+        // Obtiene los encabezados HTTP y busca el valor del encabezado especificado
+        // Si no se encuentra, devuelve null
+        return getallheaders()[$header] ?? null;
     }
 
-    /*******Obtener los parametros enviados por PUT,POST,PATCH,DELETE******/    
-    protected function getParam()
-    {
-        if ($this->getHeader('Content-Type') == 'application/json') {
-           $param = json_decode(file_get_contents("php://input"),true);
+    // Método para obtener los parámetros enviados en la petición (PUT, POST)
+    protected function getParam(){
+        if ($this->getHeader('Content-Type') === 'application/json') {
+            // Si el tipo de contenido es JSON, decodifica el cuerpo del mensaje JSON
+            return json_decode(file_get_contents("php://input"), true);
         } else {
-            $param = $_POST;
+            // Si no es JSON, devuelve los parámetros POST
+            return $_POST;
         }
-        return $param;
     }
 }
